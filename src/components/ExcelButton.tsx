@@ -1,15 +1,18 @@
 import { Button, Space } from "antd";
 import { useRef } from "react";
 import * as XLSX from "xlsx";
-import { RawItem, Item } from "../lib/table/data";
-import { convertTable } from "../lib/util/convertTable";
+import { RawItem, Item } from "../lib/table/Item";
+import {
+  convertTableToExcel,
+  convertExcelToTable,
+} from "../lib/table/convertItem";
 
-interface IExcelProps {
+interface IExcelButtonProps {
   datas: Item[];
   setDatas: React.Dispatch<React.SetStateAction<Item[]>>;
 }
 
-export function Excel({ datas, setDatas }: IExcelProps) {
+export function ExcelButton({ datas, setDatas }: IExcelButtonProps) {
   const ref = useRef<HTMLInputElement>(null);
 
   const excelDownload = (data: object[], fileName: string) => {
@@ -23,7 +26,7 @@ export function Excel({ datas, setDatas }: IExcelProps) {
   };
 
   const handleExcelDownload = () => {
-    excelDownload(datas, "my_home_material");
+    excelDownload(convertTableToExcel(datas), "my_home_material");
   };
 
   const readExcel = async (file: File) => {
@@ -41,7 +44,7 @@ export function Excel({ datas, setDatas }: IExcelProps) {
       const rawData = fileInformation.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(rawData);
 
-      data && setDatas(convertTable(data as RawItem[]));
+      data && setDatas(convertExcelToTable(data as RawItem[]));
     };
   };
 

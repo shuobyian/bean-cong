@@ -9,24 +9,20 @@ import {
   Select,
   Space,
   Typography,
+  message,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
-import { Item } from "../lib/table/data";
+import { Item } from "../lib/table/Item";
 import { ToolList } from "../lib/type/Tool";
 
-interface IDetailModalProps extends ModalProps {
+interface IItemModalProps extends ModalProps {
   prevData?: Item;
   add: (data: Omit<Item, "id">) => void;
   edit: (data: Item) => void;
 }
 
-export function DetailModal({
-  prevData,
-  add,
-  edit,
-  ...props
-}: IDetailModalProps) {
+export function ItemModal({ prevData, add, edit, ...props }: IItemModalProps) {
   const [loading, setLoading] = useState(false);
 
   const [form] = useForm<Item>();
@@ -41,6 +37,8 @@ export function DetailModal({
       if (prevData) edit(value);
       else add(value);
       props.onCancel?.(e);
+    } catch {
+      message.error("정보를 다시 확인해주세요");
     } finally {
       setLoading(false);
     }
@@ -54,7 +52,7 @@ export function DetailModal({
     <Modal
       width={700}
       title={prevData ? `${prevData.name} 정보 수정` : "물품 추가"}
-      okText='추가'
+      okText={prevData ? "수정" : "추가"}
       cancelText='취소'
       onOk={onSubmit}
       okButtonProps={{ loading }}
@@ -95,7 +93,7 @@ export function DetailModal({
           {(fields, { add, remove }) => (
             <Space direction='vertical'>
               {fields.map((field) => (
-                <Space direction='horizontal'>
+                <Space direction='horizontal' key={field.name}>
                   <Form.Item
                     style={{ margin: 0 }}
                     name={[field.name, "material"]}
@@ -118,7 +116,7 @@ export function DetailModal({
                     <Radio.Group
                       optionType='button'
                       options={[
-                        { value: false, label: "하위재료" },
+                        { value: false, label: "하위재료 있음" },
                         { value: true, label: "하위재료 없음" },
                       ]}
                     />

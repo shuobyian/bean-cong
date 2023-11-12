@@ -1,12 +1,12 @@
-import { Button, Divider, Space, Typography, message } from "antd";
+import { Button, Divider, Modal, Space, Typography, message } from "antd";
 import Table, { ColumnType } from "antd/es/table";
 import { useState } from "react";
-import { materialColumns } from "../lib/table/column";
-import { Item } from "../lib/table/data";
-import { DetailModal } from "./DetailModal";
-import { Excel } from "./Excel";
 import { DATA_KEY } from "../lib/constant/localStorageKey";
+import { materialColumns } from "../lib/table/materialColumns";
+import { Item } from "../lib/table/Item";
 import { StringUtil } from "../lib/util/StringUtil";
+import { ExcelButton } from "../components/ExcelButton";
+import { ItemModal } from "../components/ItemModal";
 
 const DEFAULT_DATA = localStorage.getItem(DATA_KEY);
 
@@ -27,26 +27,43 @@ export default function Home() {
 
   const add = (data: Omit<Item, "id">) => {
     setDatas((prev) => [...prev, { ...data, id: (datas.at(-1)?.id ?? 0) + 1 }]);
-    message.success("추가되었습니다.");
+    message.success("추가되었습니다");
   };
 
   const edit = (data: Item) => {
     setDatas((prevs) =>
       prevs.map((prev) => (prev.id === data.id ? data : prev))
     );
-    message.success("수정되었습니다.");
+    message.success("수정되었습니다");
   };
 
   const remove = () => {
-    setDatas((prevs) =>
-      prevs.filter((prev) => !selectedRows.find((row) => row.id === prev.id))
-    );
-    message.success("삭제되었습니다.");
+    Modal.confirm({
+      title: "삭제하시겠습니까?",
+      content: (
+        <ul>
+          {selectedRows.map(({ id, name }) => (
+            <li key={id}>{name}</li>
+          ))}
+        </ul>
+      ),
+      onOk: () => {
+        setDatas((prevs) =>
+          prevs.filter(
+            (prev) => !selectedRows.find((row) => row.id === prev.id)
+          )
+        );
+        setSelectedRows([]);
+        message.success("삭제되었습니다");
+      },
+      okText: "삭제",
+      cancelText: "취소",
+    });
   };
 
   const save = () => {
     localStorage.setItem(DATA_KEY, JSON.stringify(datas));
-    message.success("저장되었습니다.");
+    message.success("저장되었습니다");
   };
 
   return (
@@ -63,9 +80,9 @@ export default function Home() {
         </Button>
       </div>
       <Divider type='horizontal' />
-      <Typography>
+      <Typography.Text strong>
         선택된 물품 {StringUtil.commaWithNumber(selectedRows.length)}개
-      </Typography>
+      </Typography.Text>
       <Table
         onRow={(record) => {
           return {
@@ -101,9 +118,9 @@ export default function Home() {
         }}
       />
       <Divider type='horizontal' />
-      <Excel datas={datas} setDatas={setDatas} />
+      <ExcelButton datas={datas} setDatas={setDatas} />
       {isModalOpened && (
-        <DetailModal
+        <ItemModal
           prevData={selectedRow}
           add={add}
           edit={edit}

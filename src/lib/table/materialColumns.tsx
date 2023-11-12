@@ -1,7 +1,7 @@
 import { Space, Tooltip } from "antd";
 import { ColumnType } from "antd/es/table";
 import { getToolLabel } from "../type/Tool";
-import { Item } from "./data";
+import { Item } from "./Item";
 import { StringUtil } from "../util/StringUtil";
 
 export const materialColumns: ColumnType<Item>[] = [
@@ -9,8 +9,8 @@ export const materialColumns: ColumnType<Item>[] = [
     title: "물품명",
     key: "name",
     dataIndex: "name",
-    width: 140,
     render: (name) => <Tooltip title={name}>{name}</Tooltip>,
+    width: 140,
     fixed: "left",
   },
   {
@@ -42,8 +42,8 @@ export const materialColumns: ColumnType<Item>[] = [
         {item.materials.map((m) =>
           m.material ? (
             <div key={m.material}>
-              {m.material} / {m.base ? "하위재료" : "하위재료 없음"} / {m.count}
-              개
+              {m.material} / {m.base ? "하위재료 있음" : "하위재료 없음"} /{" "}
+              {m.count}개
             </div>
           ) : (
             <></>
