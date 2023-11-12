@@ -42,8 +42,8 @@ export const materialColumns: ColumnType<Item>[] = [
         {item.materials.map((m) =>
           m.material ? (
             <div key={m.material}>
-              {m.material} / {m.base ? "하위재료 있음" : "하위재료 없음"} /{" "}
-              {m.count}개
+              {m.material} / {m.base ? "최하위재료" : "하위재료 O"} / {m.count}
+              개
             </div>
           ) : (
             <></>

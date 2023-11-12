@@ -116,8 +116,8 @@ export function ItemModal({ prevData, add, edit, ...props }: IItemModalProps) {
                     <Radio.Group
                       optionType='button'
                       options={[
-                        { value: false, label: "하위재료 있음" },
-                        { value: true, label: "하위재료 없음" },
+                        { value: false, label: "하위재료 O" },
+                        { value: true, label: "최하위재료" },
                       ]}
                     />
                   </Form.Item>
