@@ -51,6 +51,6 @@ export const materialColumns: ColumnType<Item>[] = [
         )}
       </Space>
     ),
-    width: 300,
+    width: 400,
   },
 ];
